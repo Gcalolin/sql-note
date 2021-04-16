@@ -59,9 +59,10 @@
 
 <script>
 import { getClassList, addClass, updateClass, addMaster, getMasterList, updateMaster } from '../lib/db.js'
-const Electron = require('electron').remote
+const { ipcRenderer, remote: Electron } = require('electron');
 const { Menu, MenuItem } = Electron
 const notifier = require('node-notifier');
+
 
 export default {
     components: {},
@@ -78,6 +79,7 @@ export default {
     },
     created() {
         this.getClassList()
+        this.onMessage()
         window.addEventListener('contextmenu', (e) => {
             e.preventDefault()
             console.log('e', e );
@@ -96,6 +98,24 @@ export default {
         }
     },
     methods: {
+        onMessage() {
+            ipcRenderer.on('hideSlide', () => {
+                console.log('隐藏左侧栏');
+            })
+            ipcRenderer.on('sortBy', (e, type) => {
+                switch(type) {
+                    case 'manual':
+                        this.getMasterList({})
+                        break
+                    case 'createTime':
+                        this.getMasterList({orderProp: 'create_time'})
+                        break
+                    case 'priority':
+                        this.getMasterList({orderProp: 'priority'})
+                        break
+                }
+            })
+        },
         masterItemClickoutside() {
             this.activeMasterIndex = -1
         },
@@ -159,7 +179,7 @@ export default {
         },
         hidePopover() {
             this.popoverTop = 0
-            this.updateMasterRequest(thie.editItem)
+            this.updateMasterRequest(this.editItem)
             this.editItem = {}
         },
         toggleFinish(item) {
@@ -251,10 +271,12 @@ export default {
                 name: item.name
             })
         },
-        getMasterList() {
-            getMasterList({
-                status: this.status
-            }).then(res => {
+        getMasterList({orderProp = ''} = {}) {
+            let obj = {
+                status: this.status,
+                orderProp
+            }
+            getMasterList(obj).then(res => {
                 if (res.code === 0) {
                     this.masterList = res.data
                 }

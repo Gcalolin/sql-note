@@ -42,3 +42,4 @@ timeClock 时间提醒
 // isRepeat 是否重复 
 
 
+process.platform: win32 darwin 

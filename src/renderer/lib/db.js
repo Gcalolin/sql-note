@@ -275,8 +275,12 @@ export const getClassList = async () => {
     let res =  getList('note_class')
     return Promise.resolve(res)
 }
-export const getMasterList = async ({status}) => {
+export const getMasterList = async (obj) => {
+    const {status, orderProp} = obj
     let condition = ` where status=${status}`
+    if (orderProp) {
+        condition += ` order by ${orderProp} desc`
+    }
     let res = getList('note_master', condition)
     return Promise.resolve(res)
 }

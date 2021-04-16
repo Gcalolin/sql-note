@@ -1,5 +1,7 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, Menu } from 'electron'
 const path = require('path')
+  
+  const { applicationMenu } = require('./applicationMenu.js')
 
 /**
  * Set `__static` path to static files in production
@@ -34,6 +36,9 @@ function createWindow () {
   })
 
   mainWindow.loadURL(winURL)
+
+  const menu = Menu.buildFromTemplate(applicationMenu)
+  Menu.setApplicationMenu(menu)
 
   mainWindow.on('closed', () => {
     mainWindow = null
