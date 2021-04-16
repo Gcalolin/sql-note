@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, Menu, globalShortcut, ipcMain } from 'electron'
 const path = require('path')
   
   const { applicationMenu } = require('./applicationMenu.js')
@@ -37,8 +37,13 @@ function createWindow () {
 
   mainWindow.loadURL(winURL)
 
+  // 系统菜单
   const menu = Menu.buildFromTemplate(applicationMenu)
   Menu.setApplicationMenu(menu)
+  // 注册快捷键
+  globalShortcut.register('CommandOrControl+Alt+L', () => {
+    mainWindow.webContents.send('addMaster')
+  })
 
   mainWindow.on('closed', () => {
     mainWindow = null

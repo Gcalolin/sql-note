@@ -199,6 +199,10 @@ let getList = (tableName, condition) => {
 // 新增事项
 export const addMaster = (obj) => {
     return new Promise(async (resolve, reject) => {
+        if (!obj.master_name) {
+            resolve()
+            return
+        }
         saveFormData({
             tableName: 'note_master',
             keyValue: {

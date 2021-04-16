@@ -31,6 +31,12 @@ let template = [{
             focusedWindow.webContents.send('hideSlide')
         }
     }, {
+        label: '创建事项',
+        accelerator: 'CommandOrControl+Alt+L',
+        click: (item, focusedWindow) => {
+            focusedWindow.webContents.send('addMaster')
+        }
+    }, {
         label: '全屏',
         accelerator: (() => {
             if (process.platform === 'darwin') {

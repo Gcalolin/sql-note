@@ -115,6 +115,9 @@ export default {
                         break
                 }
             })
+            ipcRenderer.on('addMaster', () => {
+                this.addMaster()
+            })
         },
         masterItemClickoutside() {
             this.activeMasterIndex = -1
