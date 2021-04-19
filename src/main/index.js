@@ -1,7 +1,7 @@
-import { app, BrowserWindow, Menu, globalShortcut, ipcMain } from 'electron'
+import { app, BrowserWindow, Menu, globalShortcut, Tray } from 'electron'
 const path = require('path')
-  
-  const { applicationMenu } = require('./applicationMenu.js')
+const { applicationMenu } = require('./applicationMenu.js')
+let appIcon = null
 
 /**
  * Set `__static` path to static files in production
@@ -16,6 +16,24 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
+
+function setTray() {
+  const iconPath = path.join(__dirname, `../../static/iconTemplate.png`)
+  const trayMenu = Menu.buildFromTemplate([{
+    label: '打开本本记事',
+    click: () => {
+        console.log('open');
+    }
+  }, {
+    label: '退出本本记事',
+    click: () => {
+      app.quit()
+    }
+  }])
+  appIcon = new Tray(iconPath)
+  appIcon.setToolTip('本本记事')
+  appIcon.setContextMenu(trayMenu)
+}
 function createWindow () {
   /**
    * Initial window options
@@ -44,6 +62,8 @@ function createWindow () {
   globalShortcut.register('CommandOrControl+Alt+L', () => {
     mainWindow.webContents.send('addMaster')
   })
+  //托盘
+  setTray()
 
   mainWindow.on('closed', () => {
     mainWindow = null
